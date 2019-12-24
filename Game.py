@@ -34,8 +34,12 @@ def load_image(name, colorkey=None):
 
 
 def load_level(filename):
-    filename = "data/" + filename
-    with open(filename, 'r') as f:
+    fullname = os.path.join('data', filename)
+    if not os.path.exists(fullname):
+        print("Файла не существует!")
+        terminate()
+        return 0, 0, 0
+    with open(fullname, 'r') as f:
         level_map = [i.strip() for i in f]
     max_width = max(map(len, level_map))
     return list(map(lambda x: x.ljust(max_width, '.'), level_map))
@@ -118,12 +122,12 @@ class Camera:
         self.dy = -(target.rect.y + target.rect.h // 2 - HEIGHT // 2)
 
 
-player, level_x, level_y = generate_level(load_level("level.txt"))
+player, level_x, level_y = generate_level(load_level(input("Введите название уровня:")))
+start_screen()
 camera = Camera()
 
 running = True
 
-start_screen()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
